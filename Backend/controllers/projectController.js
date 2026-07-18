@@ -13,6 +13,17 @@ const createProject = async (req, res)=>{
         console.log(error);
     }
 };
+const getProject= async (req,res)=>{
+    try{
+        const projects= await Project.find({
+            owner: req.user.id,
+        });
+        res.json(projects);
+    }catch(error){
+        console.log(error);
+    }
+};
 module.exports={
     createProject,
+    getProject,
 };
