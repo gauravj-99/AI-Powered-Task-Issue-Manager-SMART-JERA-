@@ -23,7 +23,38 @@ const getProject= async (req,res)=>{
         console.log(error);
     }
 };
+const updateProject = async(req,res)=>{
+    try{
+        const projects=await project.findByIdAndUpdate(
+            req.param.id,
+            req.body,
+            {new: true}
+        );
+        res.json(project);
+    }catch(error){
+        console.log(error);
+    }
+};
+const deleteProject= async(req,res)=>{
+    try{
+        const projects=await project.findByIdAndDelete(
+            req.param.id
+        );
+        if(!project){
+            return rea.stautus(303).json({
+                message: "Project Not Found",
+            });
+        }
+        res.json({
+            message: "Project Deleted Sucessfully",
+        });
+    }catch(error){
+        console.log(error);
+    }
+};
 module.exports={
     createProject,
     getProject,
+    updateProject,
+    deleteProject,
 };
