@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import api from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,14 +27,29 @@ function Login() {
       );
 
       navigate("/dashboard");
+
     } catch (error) {
-      console.log(error);
-    }
+  console.log("ERROR OCCURRED");
+
+  console.log(error);
+  console.log(error.response);
+
+  setError(
+    error.response?.data?.message ||
+    "Login Failed"
+  );
+}
   };
 
   return (
     <div>
       <h1>Login</h1>
+
+      {error && (
+        <p style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit}>
         <input
@@ -49,16 +61,18 @@ function Login() {
           }
         />
 
+        <br /><br />
+
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) =>
-            setPassword(
-              e.target.value
-            )
+            setPassword(e.target.value)
           }
         />
+
+        <br /><br />
 
         <button type="submit">
           Login
