@@ -44,12 +44,14 @@ function Dashboard(){
     
     const fetchProjects = async ()=>{
         try{
+            
             const {data}=await api.get("/projects",{
                 headers:{
                     Authorization: `Bearer ${token}`,
                 },
             });
             setProjects(data);
+            
         }catch(error){
             console.log(error);
         }
@@ -114,9 +116,14 @@ function Dashboard(){
                     <h3>{project.title}</h3>
                     <p>{project.description}</p>
                     <button onClick={()=>
+                        navigate(`/tasks/${project._id}`)
+                        }>Open Project
+                    </button>
+                    <button onClick={()=>
                         deleteProject(project._id)}>
                         Delete
                     </button>
+                    
                     <hr />
                 </div>
 
