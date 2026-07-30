@@ -49,6 +49,41 @@ function Tasks(){
             console.log(error);
         }
     };
+    const deleteTask = async (id)=>{
+        try{
+        await api.delete(
+            `/tasks/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        alert("Task Delete");
+        fetchTasks();
+    } catch(error){
+        console.log(error);
+    }
+};
+const updateStatus = async(
+    id,
+    status
+)=>{
+    try{
+        await api.put(
+            `/tasks/${id}`,
+            {status},
+            {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        fetchTasks();
+    } catch(error){
+        console.log(error);
+    }
+};
     return(
         <div>
             <h1>Tasks Page</h1>
@@ -108,7 +143,15 @@ function Tasks(){
                     }>
                         Delete
                     </button>
-
+                    
+                    <button onClick={()=>
+                        updateStatus(
+                            task._id,
+                            "Done"
+                        )
+                    }>
+                        Mark Done
+                    </button>
                     <hr />
                 </div>
             ))}
