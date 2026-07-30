@@ -1,12 +1,15 @@
 import {useParams } from "react-router-dom";
-import {useState } from "react";
-import {useParams } from "react-router-dom";
+import {useState ,useEffect} from "react";
 import api from "../services/api";
 function Tasks(){
     const { projectId }= useParams();
     const [title, setTitle]= useState("");
     const [description, setDescription]=useState("");
     const [priority, setPriority]=useState("Medium");
+    const [tasks, setTasks]=useState([]);
+    useEffect(()=>{
+        fetchTasks();
+    }, []);
     const token = localStorage.getItem("token");
     const createTask = async()=>{
         try{
@@ -24,10 +27,25 @@ function Tasks(){
             }
             );
             alert("Task Created");
+            fetchTasks();
             setTitle("");
             setDescription("");
             setPriority("Medium");
         }catch(error){
+            console.log(error);
+        }
+    };
+    const fetchTasks =async()=>{
+        try{
+            const {data}=await api.get(
+                `/tasks/${projectId}`,{
+                    headers:{
+                        Authorization:`Bearer ${token}`,
+                    },
+                }
+            );
+            setTasks(data);
+        } catch(error){
             console.log(error);
         }
     };
@@ -68,9 +86,36 @@ function Tasks(){
             </select>
             <br />
             <br />
-            <button onclick ={createTasks}>
-                Create Task</button>
+            <button onClick ={createTask}>
+                Create Task
+            </button>
+            <hr />
+            <hr />
+            <h2>ALL Tasks</h2>
+            {tasks.map((task)=>(
+                <div key ={task._id}>
+                    <h3>{task.title}</h3>
+                    <p>{task.description}</p>
+
+                    <p>
+                        priority: {task.priority}
+                    </p>
+                    <p>
+                        Status: {task.status}
+                    </p>
+                    <button onClick={()=>
+                        deleteTask(task._id)
+                    }>
+                        Delete
+                    </button>
+
+                    <hr />
+                </div>
+            ))}
+
         </div>
+
+
     );
 }
 export default Tasks;
