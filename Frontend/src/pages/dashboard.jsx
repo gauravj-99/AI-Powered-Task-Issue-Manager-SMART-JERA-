@@ -6,10 +6,18 @@ function Dashboard(){
     const [title, setTitle]=useState("");
     const [description, setDescription]=useState("");
     const [projects, setProjects]= useState([]);
+    const [stats, setStats]= useState({
+        totalProjects: 0,
+        totalTasks: 0,
+        todoTasks: 0,
+        inProgressTasks: 0,
+        doneTasks: 0,
+    });
     const navigate=useNavigate();
     const token = localStorage.getItem("token");
     useEffect(()=>{
         fetchProjects();
+        fetchStats();
     }, []);
     const createProject=async()=>{
     try{
@@ -73,6 +81,21 @@ function Dashboard(){
             console.log(error);
         }
     };
+    const fetchStats =async () =>{
+        try {
+            const {data}= await api.get(
+                "/dashboard",
+                {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setStats(data);
+        } catch (error){
+            console.log(error);
+        }
+    };
     return(
         <div>
             <h1>Dashboard</h1>
@@ -108,6 +131,27 @@ function Dashboard(){
             <button onClick={createProject}>
                 Create Project
             </button>
+            <hr />
+            <h2>Dashboard Stats</h2>
+            <p>
+                Total Projects :{stats.totalProjects}
+            </p>
+
+            <p>
+                Total Tasks: {stats.totalTasks}
+            </p>
+
+            <p>
+                Todo Tasks : {stats.todoTasks}
+            </p>
+
+            <p>
+                IN Progress Tasks : {stats.inProgressTasks}
+            </p>
+
+            <p>
+                Done Tasks : {stats.doneTasks}
+            </p>
             <hr />
 
             <h2>Projects</h2>

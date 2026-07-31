@@ -30,7 +30,7 @@ app.get("/api/test",
 app.use("/api/projects", projectRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes );
-app.use("api/dashboard",dashboardRoutes);
+app.use("/api/dashboard",dashboardRoutes);
 
 app.listen(5000, () => {
     console.log("Server Running");
