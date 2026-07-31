@@ -84,6 +84,15 @@ const updateStatus = async(
         console.log(error);
     }
 };
+const todoTasks = tasks.filter(
+    (task)=> task.status=== "Todo"
+);
+const inProgressTasks= tasks.filter(
+    (task)=> task.status==="In Progress"
+);
+const doneTasks= tasks.filter(
+    (task)=> task.status==="Done"
+);
     return(
         <div>
             <h1>Tasks Page</h1>
@@ -126,6 +135,28 @@ const updateStatus = async(
             </button>
             <hr />
             <hr />
+            <h2>Todo</h2>
+            {todoTasks.map((task)=>(
+                <div key ={task._id}>
+                    <p>{task.title}</p>
+                    </div>
+            ))}
+            <hr />
+            <h2>In Progress</h2>
+            {inProgressTasks.map((task)=>(
+                <div key ={task._id}>
+                    <p>{task.title}</p>
+                    </div>
+            ))}
+            <hr />
+            <h2>Done</h2>
+            {doneTasks.map((task)=>(
+                <div key={task._id}>
+                    <p>{task.title}</p>
+                    </div>
+            ))}
+            <hr />
+            <hr />
             <h2>ALL Tasks</h2>
             {tasks.map((task)=>(
                 <div key ={task._id}>
@@ -144,6 +175,22 @@ const updateStatus = async(
                         Delete
                     </button>
                     
+                    <button onClick={()=>
+                        updateStatus(
+                            task._id,
+                            "Todo"
+                        )
+                    }>
+                        Todo
+                    </button>
+                    <button onClick={()=>
+                        updateStatus(
+                            task._id,
+                            "In Progress"
+                        )
+                    }>
+                        In Progress
+                    </button>
                     <button onClick={()=>
                         updateStatus(
                             task._id,
