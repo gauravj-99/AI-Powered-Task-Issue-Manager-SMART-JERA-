@@ -5,22 +5,21 @@ import api from "../services/api";
 function Tasks() {
   const { projectId } = useParams();
 
+  const [tasks, setTasks] = useState([]);
+  const [members, setMembers] = useState([]);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
-  const [tasks, setTasks] = useState([]);
-  const [members, setMembers] = useState([]);
   const [assignedTo, setAssignedTo] = useState("");
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchTasks();
-  }, []);
-    useEffect(() => {
-    fetchTasks();
     fetchProject();
-    }, []);
+  }, []);
+
   const fetchTasks = async () => {
     try {
       const { data } = await api.get(
@@ -37,22 +36,24 @@ function Tasks() {
       console.log(error);
     }
   };
-  const fetchProject = async () => {
-  try {
-    const { data } = await api.get(
-      `/projects/${projectId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
 
-    setMembers(data.members || []);
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const fetchProject = async () => {
+    try {
+      const { data } = await api.get(
+        `/projects/${projectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMembers(data.members || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const createTask = async () => {
     try {
       await api.post(
@@ -62,6 +63,7 @@ function Tasks() {
           description,
           priority,
           project: projectId,
+          assignedTo,
         },
         {
           headers: {
@@ -70,11 +72,10 @@ function Tasks() {
         }
       );
 
-      alert("Task Created");
-
       setTitle("");
       setDescription("");
       setPriority("Medium");
+      setAssignedTo("");
 
       fetchTasks();
     } catch (error) {
@@ -127,103 +128,88 @@ function Tasks() {
   );
 
   const TaskCard = ({ task }) => (
-    <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-      <h3 className="font-bold text-lg">
+    <div className="bg-white rounded-xl shadow p-4 mb-4">
+
+      <h3 className="text-lg font-bold">
         {task.title}
       </h3>
 
       <p className="text-gray-600 mt-2">
         {task.description}
       </p>
-        <p className="mt-2">
+
+      <p className="mt-2">
         Assigned To:
-        {task.assignedTo
+        <span className="font-semibold ml-2">
+          {task.assignedTo
             ? task.assignedTo.name
             : "Unassigned"}
-        </p>
-      <p className="mt-2 text-sm">
-        Priority:
-        <span
-            className={
-            task.priority === "High"
-            ? "bg-red-500 text-white px-2 py-1 rounded"
-            : task.priority === "Medium"
-            ? "bg-yellow-500 text-white px-2 py-1 rounded"
-            : "bg-green-500 text-white px-2 py-1 rounded"
-        }
-        >
-        {task.priority}
         </span>
       </p>
-        <select
-        value={assignedTo}
-        onChange={(e) =>
-            setAssignedTo(e.target.value)
-        }
-        className="w-full p-3 border rounded-lg mb-4"
+
+      <div className="mt-3">
+        <span
+          className={
+            task.priority === "High"
+              ? "bg-red-500 text-white px-2 py-1 rounded"
+              : task.priority === "Medium"
+              ? "bg-yellow-500 text-white px-2 py-1 rounded"
+              : "bg-green-500 text-white px-2 py-1 rounded"
+          }
         >
-        <option value="">
-            Select Member
+          {task.priority}
+        </span>
+      </div>
+
+      <select
+        value={task.status}
+        onChange={(e) =>
+          updateStatus(
+            task._id,
+            e.target.value
+          )
+        }
+        className="w-full border p-2 rounded mt-4"
+      >
+        <option value="Todo">
+          Todo
         </option>
 
-        {members.map((member) => (
-            <option
-            key={member._id}
-            value={member._id}
-            >
-            {member.name}
-            </option>
-        ))}
-        </select>
-      <div className="mt-3">
-        <select
-          value={task.status}
-          onChange={(e) =>
-            updateStatus(
-              task._id,
-              e.target.value
-            )
-          }
-          className="w-full border rounded-lg p-2"
-        >
-          <option value="Todo">
-            Todo
-          </option>
+        <option value="In Progress">
+          In Progress
+        </option>
 
-          <option value="In Progress">
-            In Progress
-          </option>
-
-          <option value="Done">
-            Done
-          </option>
-        </select>
-      </div>
+        <option value="Done">
+          Done
+        </option>
+      </select>
 
       <button
         onClick={() =>
           deleteTask(task._id)
         }
-        className="mt-3 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+        className="w-full mt-3 bg-red-500 text-white py-2 rounded"
       >
-        Delete Task
+        Delete
       </button>
+
     </div>
   );
 
   return (
     <div className="min-h-screen bg-slate-100 p-8">
 
-      <div className="bg-slate-900 text-white p-6 rounded-xl mb-6">
-  <h1 className="text-4xl font-bold">
-    Jira Task Board
-  </h1>
+      <div className="bg-slate-900 text-white p-6 rounded-xl mb-8">
+        <h1 className="text-4xl font-bold">
+          Project Task Board
+        </h1>
 
-  <p>
-    Manage and track tasks efficiently
-  </p>
-</div>
-      <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
+        <p>
+          Manage project tasks efficiently
+        </p>
+      </div>
+
+      <div className="bg-white p-6 rounded-xl shadow mb-8">
 
         <h2 className="text-2xl font-bold mb-4">
           Create Task
@@ -236,7 +222,7 @@ function Tasks() {
           onChange={(e) =>
             setTitle(e.target.value)
           }
-          className="w-full p-3 border rounded-lg mb-4"
+          className="w-full border p-3 rounded mb-4"
         />
 
         <input
@@ -244,9 +230,11 @@ function Tasks() {
           placeholder="Task Description"
           value={description}
           onChange={(e) =>
-            setDescription(e.target.value)
+            setDescription(
+              e.target.value
+            )
           }
-          className="w-full p-3 border rounded-lg mb-4"
+          className="w-full border p-3 rounded mb-4"
         />
 
         <select
@@ -254,7 +242,7 @@ function Tasks() {
           onChange={(e) =>
             setPriority(e.target.value)
           }
-          className="w-full p-3 border rounded-lg mb-4"
+          className="w-full border p-3 rounded mb-4"
         >
           <option value="Low">
             Low
@@ -269,18 +257,41 @@ function Tasks() {
           </option>
         </select>
 
+        <select
+          value={assignedTo}
+          onChange={(e) =>
+            setAssignedTo(
+              e.target.value
+            )
+          }
+          className="w-full border p-3 rounded mb-4"
+        >
+          <option value="">
+            Select Member
+          </option>
+
+          {members.map((member) => (
+            <option
+              key={member._id}
+              value={member._id}
+            >
+              {member.name}
+            </option>
+          ))}
+        </select>
+
         <button
           onClick={createTask}
-          className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
+          className="bg-green-600 text-white px-6 py-2 rounded"
         >
           Create Task
         </button>
 
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
 
-        <div className="bg-yellow-100 rounded-xl p-4">
+        <div className="bg-yellow-100 p-4 rounded-xl">
           <h2 className="text-xl font-bold mb-4">
             Todo ({todoTasks.length})
           </h2>
@@ -293,7 +304,7 @@ function Tasks() {
           ))}
         </div>
 
-        <div className="bg-blue-100 rounded-xl p-4">
+        <div className="bg-blue-100 p-4 rounded-xl">
           <h2 className="text-xl font-bold mb-4">
             In Progress ({inProgressTasks.length})
           </h2>
@@ -306,7 +317,7 @@ function Tasks() {
           ))}
         </div>
 
-        <div className="bg-green-100 rounded-xl p-4">
+        <div className="bg-green-100 p-4 rounded-xl">
           <h2 className="text-xl font-bold mb-4">
             Done ({doneTasks.length})
           </h2>
@@ -320,6 +331,7 @@ function Tasks() {
         </div>
 
       </div>
+
     </div>
   );
 }
