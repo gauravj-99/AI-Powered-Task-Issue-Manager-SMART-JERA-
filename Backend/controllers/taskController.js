@@ -6,13 +6,14 @@ const createTask= async (req, res)=>{
             description,
             priority,
             project,
+            assignedTo,
         }= req.body;
         const task= await Task.create({
             title,
             description,
             priority,
             project,
-            assignedTo: req.user.id,
+            assignedTo,
         });
         res.status(201).json(task);
     } catch(error){
@@ -21,9 +22,9 @@ const createTask= async (req, res)=>{
 };
 const getTasks= async (req,res)=>{
     try{
-        const tasks= await Task.find({
+        const tasks = await Task.find({
             project: req.params.projectId,
-        });
+        }).populate("assignedTo", "name email");
         res.json(tasks);
 
     }catch (error){

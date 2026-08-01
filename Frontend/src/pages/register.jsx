@@ -1,29 +1,21 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function Register() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "member",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const registerHandler = async () => {
     try {
-      await api.post("/auth/register", formData);
+      await api.post("/auth/register", {
+        name,
+        email,
+        password,
+      });
 
       alert("Registration Successful");
 
@@ -35,53 +27,61 @@ function Register() {
   };
 
   return (
-    <div>
-      <h1>Register</h1>
+    <div className="min-h-screen bg-gradient-to-r from-green-500 to-blue-600 flex justify-center items-center">
 
-      <form onSubmit={handleSubmit}>
+      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+
+        <h1 className="text-4xl font-bold text-center mb-2">
+          Jira AI
+        </h1>
+
+        <p className="text-center text-gray-500 mb-8">
+          Create Your Account
+        </p>
+
         <input
           type="text"
-          name="name"
           placeholder="Enter Name"
-          value={formData.name}
-          onChange={handleChange}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full border p-3 rounded-lg mb-4"
         />
-
-        <br />
-        <br />
 
         <input
           type="email"
-          name="email"
           placeholder="Enter Email"
-          value={formData.email}
-          onChange={handleChange}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border p-3 rounded-lg mb-4"
         />
-
-        <br />
-        <br />
 
         <input
           type="password"
-          name="password"
           placeholder="Enter Password"
-          value={formData.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full border p-3 rounded-lg mb-6"
         />
 
-        <br />
-        <br />
-
-        <button type="submit">
+        <button
+          onClick={registerHandler}
+          className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700"
+        >
           Register
         </button>
-      </form>
 
-      <br />
+        <p className="text-center mt-6">
+          Already have an account?
+          <span
+            onClick={() => navigate("/")}
+            className="text-blue-600 ml-2 cursor-pointer font-semibold"
+          >
+            Login
+          </span>
+        </p>
 
-      <Link to="/">
-        Already have an account? Login
-      </Link>
+      </div>
+
     </div>
   );
 }

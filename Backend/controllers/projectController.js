@@ -1,4 +1,5 @@
 const Project=require("../models/Project");
+const User = require("../models/User");
 const createProject = async (req, res)=>{
     try{
         const { title, description}=req.body;
@@ -15,9 +16,12 @@ const createProject = async (req, res)=>{
 };
 const getProject= async (req,res)=>{
     try{
+        console.log("User:",req.user);
+
         const projects= await Project.find({
-            owner: req.user.id,
+             owner: req.user.id,
         });
+        console.log("PROJECTS:", projects)
         res.json(projects);
     }catch(error){
         console.log(error);
@@ -41,7 +45,7 @@ const deleteProject= async(req,res)=>{
             req.params.id
         );
         if(!project){
-            return rea.stautus(303).json({
+            return rea.stautus(404).json({
                 message: "Project Not Found",
             });
         }
@@ -54,7 +58,9 @@ const deleteProject= async(req,res)=>{
 };
 const getProjectById = async (req,res)=>{
     try{
-        const project=await Project.findById(req.params.id);
+        const project = await Project.findById(
+            req.params.id
+        ).populate("members", "name email");
         if(!project){
             return res.status(404).json({
                 message: "project not found",
@@ -65,10 +71,55 @@ const getProjectById = async (req,res)=>{
         console.log(error);
     }
 };
+const addMember = async (req, res) => {
+    try {
+
+        const { email } = req.body;
+
+        const project = await Project.findById(
+            req.params.id
+        );
+
+        if (!project) {
+            return res.status(404).json({
+                message: "Project Not Found",
+            });
+        }
+
+        const user = await User.findOne({
+            email,
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User Not Found",
+            });
+        }
+
+        if (project.members.includes(user._id)) {
+            return res.status(400).json({
+                message: "User already exists in project",
+            });
+        }
+
+        project.members.push(user._id);
+
+        await project.save();
+
+        res.json({
+            message: "Member Added Successfully",
+            project,
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+};
 module.exports={
     createProject,
     getProject,
     updateProject,
     deleteProject,
     getProjectById,
+    addMember,
 };

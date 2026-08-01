@@ -3,7 +3,7 @@ const userSchema=new mongoose.Schema(
     {
         name : {
             type:String,
-            require:true,
+            required:true,
         },
         email:{
             type:String,
@@ -16,7 +16,7 @@ const userSchema=new mongoose.Schema(
         },
         role:{
             type:String,
-            emum:["admin","member"],
+            enum:["admin","member"],
             default:"member",
         },
     },
@@ -24,4 +24,6 @@ const userSchema=new mongoose.Schema(
         timestamps: true,
     }
 );
-module.exports=mongoose.model("User", userSchema);
+module.exports =
+  mongoose.models.User ||
+  mongoose.model("User", userSchema);
