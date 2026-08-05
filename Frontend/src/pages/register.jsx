@@ -6,7 +6,7 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [role, setRole]=useState("Frontend Engineer");
   const navigate = useNavigate();
 
   const registerHandler = async () => {
@@ -15,6 +15,7 @@ function Register() {
         name,
         email,
         password,
+        role,
       });
 
       alert("Registration Successful");
@@ -62,6 +63,26 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border p-3 rounded-lg mb-6"
         />
+        <select
+        value ={role}
+        onChange={(e)=>
+          setRole(e.target.value)
+          }
+          className="w-full border p-3 rounded-lg mb-4">
+            <option>
+              Frontend Engineer
+            </option>
+            <option>
+              Backend Engineer
+            </option>
+            <option>
+              Full Stack Engineer
+            </option>
+            <option>
+              DevOps Engineer
+            </option>
+          </select>
+
 
         <button
           onClick={registerHandler}

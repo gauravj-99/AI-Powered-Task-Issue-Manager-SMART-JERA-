@@ -16,8 +16,13 @@ const userSchema=new mongoose.Schema(
         },
         role:{
             type:String,
-            enum:["admin","member"],
-            default:"member",
+            enum:["Frontend Engineer",
+                "Backend Engineer",
+                "Full Stack Engineer",
+                "QA Engineer",
+                "DevOps Engineer"
+            ],
+            default: "Frontend Engineer",
         },
     },
     {

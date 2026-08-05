@@ -114,17 +114,20 @@ const addMember = async (req, res) => {
     const project = await Project.findById(
       req.params.id
     );
+    console.log("PROJECT:", project);
+
 
     if (!project) {
       return res.status(404).json({
         message: "Project Not Found",
       });
     }
+    console.log("EMAIL:", email);
 
     const user = await User.findOne({
       email,
     });
-
+    console.log("USER:", user);
     if (!user) {
       return res.status(404).json({
         message: "User Not Found",
