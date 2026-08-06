@@ -100,7 +100,24 @@ function Projects() {
       console.log(error);
     }
   };
-
+const generateTasks =async(
+  projectId
+)=>{
+  try{
+    await api.post(
+      `/ai/generate/${projectId}`,
+      {},
+      {
+      headers:{
+        Authorization:`Bearer ${token}`,
+      },
+      }
+    );
+    alert("Tasks Generate Successfully");
+  }catch(error){
+    console.log(error);
+  }
+};
   return (
     <div className="flex bg-slate-100 min-h-screen">
       <Sidebar />
@@ -169,6 +186,12 @@ function Projects() {
                     {member.name}
                   </div>
                 ))}
+                <button onClick={()=>
+                  generateTasks(project._id)
+                }
+                className="bg-purple-600 text-white px-4 py-2 rounded">
+                  AI Generate Tasks
+                  </button>
               </div>
 
               <input
