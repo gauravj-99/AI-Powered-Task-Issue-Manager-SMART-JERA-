@@ -117,7 +117,7 @@ const generateTasks =async(
   }catch(error){
     console.log(error);
   }
-};
+}
   return (
     <div className="flex bg-slate-100 min-h-screen">
       <Sidebar />

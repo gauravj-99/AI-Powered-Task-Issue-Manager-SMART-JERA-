@@ -1,4 +1,4 @@
-const project=require("../models/Project");
+const Project=require("../models/Project");
 const Task = require("../models/Task");
 const generateAndAssignTasks =async(req,res)=>{
     try{
@@ -8,7 +8,7 @@ const generateAndAssignTasks =async(req,res)=>{
             "members",
             "name role"
         );
-        const taskToCreate=[];
+        const tasksToCreate=[];
         project.members.forEach((member)=>{
             if(
                 member.role==="Frontend Engineer"
@@ -23,7 +23,7 @@ const generateAndAssignTasks =async(req,res)=>{
                 });
             }
             if(
-                member.role==="backend Engineer"
+                member.role==="Backend Engineer"
             ){
                 tasksToCreate.push({
                     title: "Develop Auth API",
@@ -58,4 +58,4 @@ const generateAndAssignTasks =async(req,res)=>{
         console.log(error);
     }
 };
-module.exports={generateAndAssingnTasks,};
+module.exports={generateAndAssignTasks,};
