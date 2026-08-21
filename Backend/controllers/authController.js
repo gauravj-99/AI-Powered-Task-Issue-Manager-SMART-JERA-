@@ -2,6 +2,7 @@ const User =require("../models/user");
 const jwt=require("jsonwebtoken");
 const bcrypt =require("bcryptjs");
 const registerUser = async (req, res) => {
+  debugger;
   try{
     const{name,email,password,role}=req.body;
     const salt = await bcrypt.genSalt(10);
@@ -30,7 +31,7 @@ const loginUser=async (req, res)=>{
     const user =await User.findOne({email});
     if(!user){
       return res.status(404).json({
-        message:"User not Found",
+        message:common.user,
       });
     }
     const isMatch=await bcrypt.compare(

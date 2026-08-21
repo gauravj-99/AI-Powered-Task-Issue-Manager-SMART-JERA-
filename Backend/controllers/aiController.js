@@ -11,7 +11,7 @@ const generateAndAssignTasks =async(req,res)=>{
         const tasksToCreate=[];
         project.members.forEach((member)=>{
             if(
-                member.role==="Frontend Engineer"
+                member.role ==="Frontend Engineer"
             ){
                 tasksToCreate.push({
                     title:"Build Login UI",
