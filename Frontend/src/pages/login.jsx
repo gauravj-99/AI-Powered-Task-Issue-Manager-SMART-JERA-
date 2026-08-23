@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    navigate("/dashboard", {
+      replace: true,
+    });
+  }
+}, [navigate]);
   const loginHandler = async () => {
     try {
       const { data } = await api.post(
