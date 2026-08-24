@@ -16,7 +16,9 @@ const userSchema=new mongoose.Schema(
         },
         role:{
             type:String,
-            enum:["Frontend Engineer",
+            enum:[
+                "Manager",
+                "Frontend Engineer",
                 "Backend Engineer",
                 "Full Stack Engineer",
                 "QA Engineer",

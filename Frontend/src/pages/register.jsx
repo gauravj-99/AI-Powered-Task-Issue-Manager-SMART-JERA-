@@ -70,6 +70,9 @@ function Register() {
           }
           className="w-full border p-3 rounded-lg mb-4">
             <option>
+              Manager
+            </option>
+            <option>
               Frontend Engineer
             </option>
             <option>
