@@ -13,7 +13,8 @@ function Projects() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-
+  const role=localStorage.getItem("role");
+  // console.log("Role:", role);
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -118,13 +119,14 @@ const generateTasks =async(
     console.log(error);
   }
 }
-  return (
-    <div className="flex bg-slate-100 min-h-screen">
-      <Sidebar />
+ return (
+  <div className="flex bg-slate-100 min-h-screen">
+    <Sidebar />
 
-      <div className="flex-1 p-8">
-        <Navbar />
+    <div className="flex-1 p-8">
+      <Navbar />
 
+      {role === "Manager" && (
         <div className="bg-white p-6 rounded-xl shadow mb-8">
           <h2 className="text-2xl font-bold mb-4">
             Create Project
@@ -134,9 +136,7 @@ const generateTasks =async(
             type="text"
             placeholder="Project Title"
             value={title}
-            onChange={(e) =>
-              setTitle(e.target.value)
-            }
+            onChange={(e) => setTitle(e.target.value)}
             className="w-full border p-3 rounded mb-4"
           />
 
@@ -144,9 +144,7 @@ const generateTasks =async(
             type="text"
             placeholder="Project Description"
             value={description}
-            onChange={(e) =>
-              setDescription(e.target.value)
-            }
+            onChange={(e) => setDescription(e.target.value)}
             className="w-full border p-3 rounded mb-4"
           />
 
@@ -157,80 +155,89 @@ const generateTasks =async(
             Create Project
           </button>
         </div>
+      )}
 
-        <h2 className="text-3xl font-bold mb-6">
-          Projects ({projects.length})
-        </h2>
+      <h2 className="text-3xl font-bold mb-6">
+        Projects ({projects.length})
+      </h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
-            <div
-              key={project._id}
-              className="bg-white p-5 rounded-xl shadow-lg"
-            >
-              <h3 className="text-xl font-bold">
-                {project.title}
-              </h3>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((project) => (
+          <div
+            key={project._id}
+            className="bg-white p-5 rounded-xl shadow-lg"
+          >
+            <h3 className="text-xl font-bold">
+              {project.title}
+            </h3>
 
-              <p className="text-gray-600 my-3">
-                {project.description}
-              </p>
+            <p className="text-gray-600 my-3">
+              {project.description}
+            </p>
 
-              <div className="mb-4">
-                <h4 className="font-semibold mb-2">
-                  Members
-                </h4>
+            <div className="mb-4">
+              <h4 className="font-semibold mb-2">
+                Members
+              </h4>
 
-                {project.members?.map((member) => (
-                  <div key={member._id}>
-                    {member.name}
-                  </div>
-                ))}
-                <button onClick={()=>
-                  generateTasks(project._id)
-                }
-                className="bg-purple-600 text-white px-4 py-2 rounded">
-                  AI Generate Tasks
-                  </button>
-              </div>
+              {project.members?.map((member) => (
+                <div key={member._id}>
+                  {member.name}
+                </div>
+              ))}
+            </div>
 
-              <input
-                type="email"
-                placeholder="Member Email"
-                value={
-                  memberEmails[project._id] || ""
-                }
-                onChange={(e) =>
-                  setMemberEmails({
-                    ...memberEmails,
-                    [project._id]:
-                      e.target.value,
-                  })
-                }
-                className="w-full border p-2 rounded mb-2"
-              />
-
-              <button
-                onClick={() =>
-                  addMember(project._id)
-                }
-                className="bg-purple-600 text-white px-4 py-2 rounded w-full mb-3"
-              >
-                Add Member
-              </button>
-
-              <div className="flex gap-2">
+            {role === "Manager" && (
+              <>
                 <button
                   onClick={() =>
-                    navigate(
-                      `/tasks/${project._id}`
-                    )
+                    generateTasks(project._id)
                   }
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
+                  className="bg-purple-600 text-white px-4 py-2 rounded mb-3"
                 >
-                  Open
+                  AI Generate Tasks
                 </button>
 
+                <input
+                  type="email"
+                  placeholder="Member Email"
+                  value={
+                    memberEmails[project._id] || ""
+                  }
+                  onChange={(e) =>
+                    setMemberEmails({
+                      ...memberEmails,
+                      [project._id]:
+                        e.target.value,
+                    })
+                  }
+                  className="w-full border p-2 rounded mb-2"
+                />
+
+                <button
+                  onClick={() =>
+                    addMember(project._id)
+                  }
+                  className="bg-purple-600 text-white px-4 py-2 rounded w-full mb-3"
+                >
+                  Add Member
+                </button>
+              </>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() =>
+                  navigate(
+                    `/tasks/${project._id}`
+                  )
+                }
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                Open
+              </button>
+
+              {role === "Manager" && (
                 <button
                   onClick={() =>
                     deleteProject(project._id)
@@ -239,7 +246,9 @@ const generateTasks =async(
                 >
                   Delete
                 </button>
-              </div>
+              )}
+            </div>
+ 
             </div>
           ))}
         </div>

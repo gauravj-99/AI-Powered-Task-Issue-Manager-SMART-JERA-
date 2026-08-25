@@ -17,7 +17,7 @@ function Register() {
         password,
         role,
       });
-
+      // console.log(role);
       alert("Registration Successful");
 
       navigate("/");

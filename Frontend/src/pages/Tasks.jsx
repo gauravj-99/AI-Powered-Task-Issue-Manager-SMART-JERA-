@@ -14,7 +14,7 @@ function Tasks() {
   const [assignedTo, setAssignedTo] = useState("");
 
   const token = localStorage.getItem("token");
-
+  const role= localStorage.getItem("role");
   useEffect(() => {
     fetchTasks();
     fetchProject();
@@ -184,7 +184,9 @@ function Tasks() {
         </option>
       </select>
 
-      <button
+      {
+        role==="Manager" &&(
+          <button
         onClick={() =>
           deleteTask(task._id)
         }
@@ -192,6 +194,8 @@ function Tasks() {
       >
         Delete
       </button>
+        )
+      }
 
     </div>
   );
@@ -208,9 +212,9 @@ function Tasks() {
           Manage project tasks efficiently
         </p>
       </div>
-
+      {role ==="Manager" &&(
       <div className="bg-white p-6 rounded-xl shadow mb-8">
-
+        
         <h2 className="text-2xl font-bold mb-4">
           Create Task
         </h2>
@@ -279,8 +283,7 @@ function Tasks() {
             </option>
           ))}
         </select>
-
-        <button
+            <button
           onClick={createTask}
           className="bg-green-600 text-white px-6 py-2 rounded"
         >
@@ -288,6 +291,7 @@ function Tasks() {
         </button>
 
       </div>
+      )}
 
       <div className="grid md:grid-cols-3 gap-6">
 

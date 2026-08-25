@@ -28,6 +28,10 @@ function Login() {
         "token",
         data.token
       );
+      localStorage.setItem(
+        "role",
+        data.role
+      );
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
