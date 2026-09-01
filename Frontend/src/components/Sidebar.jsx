@@ -1,4 +1,4 @@
-import { LayoutDashboard, FolderKanban, LogOut } from "lucide-react";
+import { LayoutDashboard, FolderKanban, LogOut, LayoutFreeform } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
@@ -33,6 +33,13 @@ function Sidebar() {
           <FolderKanban size={20} />
           Projects
         </button>
+        <button 
+        onClick={()=>navigate("/my-tasks")}
+        className="flex items-center gap-3 w-full p-3 hover:bg-slate-700"
+        >
+          <LayoutFreeform size={20}/>
+          MyTasks
+        </button>
 
         <button
           onClick={logoutHandler}
@@ -41,6 +48,7 @@ function Sidebar() {
           <LogOut size={20} />
           Logout
         </button>
+        
 
       </div>
     </div>

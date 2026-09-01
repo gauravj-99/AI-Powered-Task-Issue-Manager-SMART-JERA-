@@ -91,9 +91,27 @@ const deleteTask = async (req, res) => {
     });
   }
 };
+const getMyTasks =async(req, res)=>{
+  try{
+    const tasks=await Task.find({
+      assignedTo:req.user._id,
+    })
+    .populate("project", "title")
+    .populate("assignedTo","name");
+    console.log("TASKS:", tasks);
+    console.log(tasks);
+    res.json(tasks);
+  } catch(error){
+    console.log(error);
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
 module.exports = {
   createTask,
   getTasks,
   updateTaskStatus,
   deleteTask,
+  getMyTasks,
 };

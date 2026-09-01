@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Register from "./pages/register";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import MyTasks from "./pages/MyTasks";
 function App() {
   return (
     <BrowserRouter>
@@ -39,7 +39,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/tasks/:projectId"
           element={
@@ -47,6 +46,14 @@ function App() {
               <Tasks />
             </ProtectedRoute>
           }
+        />
+        <Route
+        path="/my-tasks"
+        element={
+          <ProtectedRoute>
+            <MyTasks/>
+          </ProtectedRoute>
+        }
         />
 
       </Routes>

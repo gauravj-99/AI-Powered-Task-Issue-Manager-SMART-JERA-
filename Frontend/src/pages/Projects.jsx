@@ -88,7 +88,6 @@ function Projects() {
           },
         }
       );
-
       alert("Member Added");
 
       fetchProjects();
