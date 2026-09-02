@@ -44,22 +44,34 @@ const updateTaskStatus = async (
   res
 ) => {
   try {
-    const task =
-      await Task.findByIdAndUpdate(
-        req.params.id,
-        {
-          status: req.body.status,
-        },
-        {
-          new: true,
-        }
-      );
+
+    const task = await Task.findById(
+      req.params.id
+    );
+
     if (!task) {
       return res.status(404).json({
         message: "Task Not Found",
       });
     }
+
+    if (
+      req.user.role !== "Manager" &&
+      task.assignedTo.toString() !==
+      req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        message:
+          "You can only update your own tasks",
+      });
+    }
+
+    task.status = req.body.status;
+
+    await task.save();
+
     res.json(task);
+
   } catch (error) {
     console.log(error);
 
@@ -94,12 +106,13 @@ const deleteTask = async (req, res) => {
 const getMyTasks =async(req, res)=>{
   try{
     const tasks=await Task.find({
-      assignedTo:req.user._id,
+      assignedTo:req.user.id,
     })
     .populate("project", "title")
     .populate("assignedTo","name");
     console.log("TASKS:", tasks);
-    console.log(tasks);
+    console.log("USER:", req.user);
+    // console.log(tasks);
     res.json(tasks);
   } catch(error){
     console.log(error);

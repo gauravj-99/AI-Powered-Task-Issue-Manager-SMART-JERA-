@@ -1,7 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../services/api";
-
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import { toast } from "react-toastify";
 function Tasks() {
   const { projectId } = useParams();
 
@@ -15,6 +17,7 @@ function Tasks() {
 
   const token = localStorage.getItem("token");
   const role= localStorage.getItem("role");
+  const userId = localStorage.getItem("userId");
   useEffect(() => {
     fetchTasks();
     fetchProject();
@@ -98,22 +101,29 @@ function Tasks() {
   };
 
   const updateStatus = async (id, status) => {
-    try {
-      await api.put(
-        `/tasks/${id}`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  try {
+    await api.put(
+      `/tasks/${id}`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      fetchTasks();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    toast.success(`Task moved to ${status}`);
+
+    fetchTasks();
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      "Failed to update task"
+    );
+
+    console.log(error);
+  }
+};
 
   const todoTasks = tasks.filter(
     (task) => task.status === "Todo"
@@ -162,27 +172,25 @@ function Tasks() {
       </div>
 
       <select
-        value={task.status}
-        onChange={(e) =>
-          updateStatus(
-            task._id,
-            e.target.value
-          )
-        }
-        className="w-full border p-2 rounded mt-4"
-      >
-        <option value="Todo">
-          Todo
-        </option>
-
-        <option value="In Progress">
-          In Progress
-        </option>
-
-        <option value="Done">
-          Done
-        </option>
-      </select>
+      disabled={
+        role !== "Manager" &&
+        task.assignedTo?._id !== userId
+      }
+      value={task.status}
+      onChange={(e) =>
+        updateStatus(task._id, e.target.value)
+      }
+      className={`w-full border p-2 rounded mt-2 ${
+        role !== "Manager" &&
+        task.assignedTo?._id !== userId
+          ? "bg-gray-200 cursor-not-allowed"
+          : "bg-white"
+      }`}
+    >
+      <option value="Todo">Todo</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Done">Done</option>
+    </select>
 
       {
         role==="Manager" &&(

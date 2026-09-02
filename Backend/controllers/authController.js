@@ -1,4 +1,4 @@
-const User =require("../models/user");
+const User =require("../models/User");
 const jwt=require("jsonwebtoken");
 const bcrypt =require("bcryptjs");
 const registerUser = async (req, res) => {
@@ -53,6 +53,7 @@ const loginUser=async (req, res)=>{
   res.json({
     token,
     role:user.role,
+    userId:user._id,
   });
   }catch(error){
     console.log(error);

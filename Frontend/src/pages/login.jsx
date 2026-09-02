@@ -32,6 +32,10 @@ function Login() {
         "role",
         data.role
       );
+      localStorage.setItem(
+        "userId", 
+        data.userId
+      );
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
