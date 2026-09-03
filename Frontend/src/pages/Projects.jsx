@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-
+import { toast } from "react-toastify";
 function Projects() {
   const [projects, setProjects] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [memberEmails, setMemberEmails] = useState({});
-
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -18,7 +18,6 @@ function Projects() {
   useEffect(() => {
     fetchProjects();
   }, []);
-
   const fetchProjects = async () => {
     try {
       const { data } = await api.get("/projects", {
@@ -53,9 +52,12 @@ function Projects() {
 
       fetchProjects();
 
-      alert("Project Created");
+      toast.success("Project Created Successfully");
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to Create Project"
+      );
     }
   };
 
@@ -69,9 +71,12 @@ function Projects() {
 
       fetchProjects();
 
-      alert("Project Deleted");
+      toast.success("Project Deleted Successfully");
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to Delete Project"
+      );
     }
   };
 
@@ -88,7 +93,7 @@ function Projects() {
           },
         }
       );
-      alert("Member Added");
+      toast.success("Member Added Successfully");
 
       fetchProjects();
 
@@ -97,7 +102,10 @@ function Projects() {
         
       });
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to Add Member"
+      );
     }
   };
 const generateTasks =async(
@@ -113,17 +121,33 @@ const generateTasks =async(
       },
       }
     );
-    alert("Tasks Generate Successfully");
-  }catch(error){
-    console.log(error);
+    toast.success("Tasks Generate Successfully");
+  }catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      "Failed to Generate Tasks"
+    );
   }
-}
+};
+const filteredProjects = projects.filter(
+  (project) =>
+    project.title
+      .toLowerCase()
+      .includes(search.toLowerCase()) ||
+    project.description
+      .toLowerCase()
+      .includes(search.toLowerCase())
+);
  return (
   <div className="flex bg-slate-100 min-h-screen">
     <Sidebar />
 
     <div className="flex-1 p-8">
-      <Navbar />
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+        placeholder="Search Projects..."
+      />
 
       {role === "Manager" && (
         <div className="bg-white p-6 rounded-xl shadow mb-8">
@@ -161,8 +185,7 @@ const generateTasks =async(
       </h2>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <div
+        {filteredProjects.map((project) => (          <div
             key={project._id}
             className="bg-white p-5 rounded-xl shadow-lg"
           >

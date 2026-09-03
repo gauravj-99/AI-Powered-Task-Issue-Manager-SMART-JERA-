@@ -6,15 +6,16 @@ import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 function Tasks() {
   const { projectId } = useParams();
-
+  const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [members, setMembers] = useState([]);
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [assignedTo, setAssignedTo] = useState("");
-
+  
+  const [search, setSearch] = useState("");
+  
   const token = localStorage.getItem("token");
   const role= localStorage.getItem("role");
   const userId = localStorage.getItem("userId");
@@ -50,7 +51,7 @@ function Tasks() {
           },
         }
       );
-
+      setProject(data);
       setMembers(data.members || []);
     } catch (error) {
       console.log(error);
@@ -100,7 +101,7 @@ function Tasks() {
     }
   };
 
-  const updateStatus = async (id, status) => {
+const updateStatus = async (id, status) => {
   try {
     await api.put(
       `/tasks/${id}`,
@@ -124,18 +125,27 @@ function Tasks() {
     console.log(error);
   }
 };
+  const filteredTasks = tasks.filter(
+  (task) =>
+    task.title
+      .toLowerCase()
+      .includes(search.toLowerCase()) ||
+    task.description
+      .toLowerCase()
+      .includes(search.toLowerCase())
+);
 
-  const todoTasks = tasks.filter(
-    (task) => task.status === "Todo"
-  );
+ const todoTasks = filteredTasks.filter(
+  (task) => task.status === "Todo"
+);
 
-  const inProgressTasks = tasks.filter(
-    (task) => task.status === "In Progress"
-  );
+const inProgressTasks = filteredTasks.filter(
+  (task) => task.status === "In Progress"
+);
 
-  const doneTasks = tasks.filter(
-    (task) => task.status === "Done"
-  );
+const doneTasks = filteredTasks.filter(
+  (task) => task.status === "Done"
+);
 
   const TaskCard = ({ task }) => (
     <div className="bg-white rounded-xl shadow p-4 mb-4">
@@ -174,21 +184,28 @@ function Tasks() {
       <select
       disabled={
         role !== "Manager" &&
-        task.assignedTo?._id !== userId
+        String(task.assignedTo?._id) !==
+          String(userId)
       }
       value={task.status}
       onChange={(e) =>
-        updateStatus(task._id, e.target.value)
+        updateStatus(
+          task._id,
+          e.target.value
+        )
       }
-      className={`w-full border p-2 rounded mt-2 ${
+      className={`w-full border p-2 rounded mt-3 ${
         role !== "Manager" &&
-        task.assignedTo?._id !== userId
+        String(task.assignedTo?._id) !==
+          String(userId)
           ? "bg-gray-200 cursor-not-allowed"
           : "bg-white"
       }`}
     >
       <option value="Todo">Todo</option>
-      <option value="In Progress">In Progress</option>
+      <option value="In Progress">
+        In Progress
+      </option>
       <option value="Done">Done</option>
     </select>
 
@@ -209,15 +226,26 @@ function Tasks() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 p-8">
+<div className="flex bg-slate-100 min-h-screen">
+  <Sidebar />
 
+  <div className="flex-1 p-8">
+    <Navbar
+      search={search}
+      setSearch={setSearch}
+      placeholder="Search Tasks..."
+    />
       <div className="bg-slate-900 text-white p-6 rounded-xl mb-8">
         <h1 className="text-4xl font-bold">
           Project Task Board
         </h1>
 
-        <p>
-          Manage project tasks efficiently
+        <h2 className="text-xl mt-3 text-blue-200 font-semibold">
+          {project?.title}
+        </h2>
+
+        <p className="mt-2">
+          {project?.description}
         </p>
       </div>
       {role ==="Manager" &&(
@@ -344,6 +372,7 @@ function Tasks() {
 
       </div>
 
+    </div>
     </div>
   );
 }

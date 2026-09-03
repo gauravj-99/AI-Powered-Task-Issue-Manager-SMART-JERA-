@@ -7,7 +7,13 @@ function Sidebar() {
   const logoutHandler = () => {
     localStorage.removeItem("token");
     navigate("/");
+
   };
+  const name =
+  localStorage.getItem("name");
+
+  const role =
+  localStorage.getItem("role");
 
   return (
     <div className="w-64 bg-slate-900 text-white min-h-screen p-5">
@@ -15,6 +21,22 @@ function Sidebar() {
       <h1 className="text-2xl font-bold mb-10">
         Jira AI
       </h1>
+      <div className="bg-slate-800 text-white p-4 rounded-xl mb-6">
+
+        <div className="h-12 w-12 rounded-full bg-blue-600
+         flex items-center justify-center font-bold text-xl">
+          {name?.charAt(0).toUpperCase()}
+        </div>
+
+        <h2 className="mt-3 font-bold">
+          {name}
+        </h2>
+
+        <p className="text-sm text-gray-300">
+          {role}
+        </p>
+
+      </div>
 
       <div className="space-y-4">
 

@@ -8,6 +8,7 @@ function Login() {
   const navigate = useNavigate();
   useEffect(() => {
   const token = localStorage.getItem("token");
+  
 
   if (token) {
     navigate("/dashboard", {
@@ -23,6 +24,10 @@ function Login() {
           email,
           password,
         }
+      );
+      localStorage.setItem(
+        "name",
+        data.name
       );
       localStorage.setItem(
         "token",
