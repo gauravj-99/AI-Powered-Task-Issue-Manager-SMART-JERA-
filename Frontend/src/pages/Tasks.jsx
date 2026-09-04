@@ -15,7 +15,7 @@ function Tasks() {
   const [assignedTo, setAssignedTo] = useState("");
   
   const [search, setSearch] = useState("");
-  
+  const [dueDate, setDueDate] = useState("");
   const token = localStorage.getItem("token");
   const role= localStorage.getItem("role");
   const userId = localStorage.getItem("userId");
@@ -66,6 +66,7 @@ function Tasks() {
           title,
           description,
           priority,
+          dueDate,
           project: projectId,
           assignedTo,
         },
@@ -80,7 +81,7 @@ function Tasks() {
       setDescription("");
       setPriority("Medium");
       setAssignedTo("");
-
+      setDueDate("");
       fetchTasks();
     } catch (error) {
       console.log(error);
@@ -147,9 +148,21 @@ const doneTasks = filteredTasks.filter(
   (task) => task.status === "Done"
 );
 
-  const TaskCard = ({ task }) => (
-    <div className="bg-white rounded-xl shadow p-4 mb-4">
+const TaskCard = ({ task }) => {
 
+  const isOverdue =
+    task.dueDate &&
+    new Date(task.dueDate) < new Date() &&
+    task.status !== "Done";
+
+  return (
+        <div
+        className={`bg-white rounded-xl shadow p-4 mb-4 border-l-4 ${
+          isOverdue
+            ? "border-red-600"
+            : "border-blue-600"
+        }`}
+      >
       <h3 className="text-lg font-bold">
         {task.title}
       </h3>
@@ -157,7 +170,15 @@ const doneTasks = filteredTasks.filter(
       <p className="text-gray-600 mt-2">
         {task.description}
       </p>
-
+      <p className="text-sm text-gray-500 mt-2">
+        Due:
+        {" "}
+        {task.dueDate
+          ? new Date(
+              task.dueDate
+            ).toLocaleDateString()
+          : "Not Set"}
+      </p>
       <p className="mt-2">
         Assigned To:
         <span className="font-semibold ml-2">
@@ -180,6 +201,11 @@ const doneTasks = filteredTasks.filter(
           {task.priority}
         </span>
       </div>
+      {isOverdue && (
+      <span className="bg-red-500 text-white px-2 py-1 rounded ml-2 text-sm">
+        Overdue
+      </span>
+    )}
 
       <select
       disabled={
@@ -224,6 +250,8 @@ const doneTasks = filteredTasks.filter(
 
     </div>
   );
+};
+  
 
   return (
 <div className="flex bg-slate-100 min-h-screen">
@@ -296,6 +324,15 @@ const doneTasks = filteredTasks.filter(
             High
           </option>
         </select>
+
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) =>
+            setDueDate(e.target.value)
+          }
+          className="w-full border p-3 rounded mb-4"
+        />
 
         <select
           value={assignedTo}

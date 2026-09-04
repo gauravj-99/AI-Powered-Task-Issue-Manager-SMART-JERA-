@@ -7,7 +7,7 @@ function MyTasks() {
   const [tasks, setTasks] = useState([]);
 
   const token = localStorage.getItem("token");
-
+  const [search, setSearch]=useState("");
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -72,12 +72,24 @@ const todoTasks = tasks.filter(
   (task) => task.status === "Todo"
 ).length;
 
+const filteredTasks = tasks.filter(
+  (task) =>
+    task.title?.toLowerCase()
+      .includes(search.toLowerCase()) ||
+    task.description?.toLowerCase()
+      .includes(search.toLowerCase())
+);
+
   return (
     <div className="flex bg-slate-100 min-h-screen">
       <Sidebar />
 
       <div className="flex-1 p-8">
-        <Navbar />
+        <Navbar
+          search={search}
+          setSearch={setSearch}
+          placeholder="Search Projects..."
+        />
 
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -148,7 +160,7 @@ const todoTasks = tasks.filter(
 
           <div className="grid lg:grid-cols-2 gap-6">
 
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
 
               <div
                 key={task._id}

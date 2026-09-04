@@ -1,12 +1,13 @@
 const Task = require("../models/Task");
 const createTask = async (req, res) => {
-  try {
-    const {
+  try{
+    const{
       title,
       description,
       priority,
       project,
       assignedTo,
+      dueDate,
     } = req.body;
     const task = await Task.create({
       title,
@@ -14,6 +15,7 @@ const createTask = async (req, res) => {
       priority,
       project,
       assignedTo,
+      dueDate,
     });
     res.status(201).json(task);
   } catch (error) {

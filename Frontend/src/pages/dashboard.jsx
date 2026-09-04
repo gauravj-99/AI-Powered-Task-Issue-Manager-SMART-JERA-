@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { toast } from "react-toastify";
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -16,7 +17,7 @@ function Dashboard() {
   const [projects, setProjects] = useState([]);
 
   const navigate = useNavigate();
-
+  const [search, setSearch]=useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -75,7 +76,14 @@ function Dashboard() {
       console.log(error);
     }
   };
-
+  const filteredProjects= projects.filter(
+    (project)=>
+      project.title?.toLowerCase()
+    .includes(search.toLowerCase()) ||
+      project.description?.toLowerCase()
+      .includes(search.toLowerCase())
+  );
+  console.log("Search Value:", search);
   return (
     <div className="flex bg-slate-100 min-h-screen">
 
@@ -83,7 +91,11 @@ function Dashboard() {
 
       <div className="flex-1 p-8">
 
-        <Navbar />
+        <Navbar
+          search={search}
+          setSearch={setSearch}
+          placeholder="Search Projects..."
+        />
 
         <div className="mb-8 bg-slate-900 text-white rounded-xl p-6">
           <h1 className="text-4xl font-bold">
@@ -154,7 +166,7 @@ function Dashboard() {
 
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold">
-            Recent Projects
+            Recent Projects ({filteredProjects.length})
           </h2>
 
           <button
@@ -167,7 +179,7 @@ function Dashboard() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <div
               key={project._id}
               className="bg-white p-5 rounded-xl shadow-lg hover:shadow-2xl transition"
@@ -199,16 +211,16 @@ function Dashboard() {
                   Open
                 </button>
 
+                {localStorage.getItem("role") === "Manager" && (
                 <button
                   onClick={() =>
-                    deleteProject(
-                      project._id
-                    )
+                    deleteProject(project._id)
                   }
                   className="bg-red-600 text-white px-4 py-2 rounded"
                 >
                   Delete
                 </button>
+              )}
 
               </div>
 

@@ -1,11 +1,10 @@
 function Navbar({
-  search,
-  setSearch,
+  search = "",
+  setSearch = () => {},
   placeholder = "Search..."
 }) {
   return (
     <div className="bg-white shadow rounded-xl p-4 flex justify-between items-center mb-6">
-
       <input
         type="text"
         placeholder={placeholder}
@@ -15,7 +14,6 @@ function Navbar({
         }
         className="border p-2 rounded-lg w-72"
       />
-
     </div>
   );
 }
