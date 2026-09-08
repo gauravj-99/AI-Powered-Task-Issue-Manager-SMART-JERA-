@@ -32,6 +32,10 @@ function Projects() {
   };
 
   const createProject = async () => {
+    if(!title.trim() || !description.trim()){
+      toast.error("Title and description are required");
+      return;
+    }
     try {
       await api.post(
         "/projects",
@@ -48,9 +52,7 @@ function Projects() {
 
       setTitle("");
       setDescription("");
-
       fetchProjects();
-
       toast.success("Project Created Successfully");
     } catch (error) {
       toast.error(
@@ -140,16 +142,21 @@ const filteredProjects = projects.filter(
 return (
   <ProjectsView
     projects={projects}
-    members={members}
+    filteredProjects={filteredProjects}
     search={search}
     setSearch={setSearch}
     createProject={createProject}
     deleteProject={deleteProject}
     addMember={addMember}
+    generateTasks={generateTasks}
+    memberEmails={memberEmails}
+    setMemberEmails={setMemberEmails}
     title={title}
     setTitle={setTitle}
     description={description}
     setDescription={setDescription}
+    role={role}
+    navigate={navigate}
   />
 );
 }

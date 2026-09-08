@@ -1,19 +1,24 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 function ProjectsView(props){
-    const{
+    const {
       projects,
-      members,
+      filteredProjects,
       search,
       setSearch,
       createProject,
       deleteProject,
       addMember,
+      generateTasks,
+      memberEmails,
+      setMemberEmails,
       title,
       setTitle,
       description,
       setDescription,
-    }=props;
+      role,
+      navigate,
+    } = props;
 return (
   <div className="flex bg-slate-100 min-h-screen">
     <Sidebar />

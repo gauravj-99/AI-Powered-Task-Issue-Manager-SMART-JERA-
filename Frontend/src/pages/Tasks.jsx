@@ -85,6 +85,11 @@ function Tasks() {
       setDueDate("");
       fetchTasks();
     } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to create task"
+      );
+
       console.log(error);
     }
   };
