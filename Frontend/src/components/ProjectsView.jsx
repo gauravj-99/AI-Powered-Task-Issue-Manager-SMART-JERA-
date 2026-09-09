@@ -20,7 +20,7 @@ function ProjectsView(props){
       navigate,
     } = props;
 return (
-  <div className="flex bg-slate-100 min-h-screen">
+  <div className="flex bg-slate-100 min-h-screen bg-gradient-to-r from-blue-300 to-blue-100">
     <Sidebar />
 
     <div className="flex-1 p-8">

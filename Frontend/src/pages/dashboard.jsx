@@ -19,7 +19,6 @@ function Dashboard() {
 
   const navigate = useNavigate();
   const [search, setSearch]=useState("");
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchDashboard();
@@ -29,12 +28,7 @@ function Dashboard() {
   const fetchDashboard = async () => {
     try {
       const { data } = await api.get(
-        "/dashboard",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        "/dashboard"
       );
 
       setStats(data);
@@ -46,12 +40,7 @@ function Dashboard() {
   const fetchProjects = async () => {
     try {
       const { data } = await api.get(
-        "/projects",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        "/projects"
       );
 
       setProjects(data);
@@ -62,15 +51,7 @@ function Dashboard() {
 
   const deleteProject = async (id) => {
     try {
-      await api.delete(
-        `/projects/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      await api.delete(`/projects/${id}`);
       fetchProjects();
       fetchDashboard();
     } catch (error) {

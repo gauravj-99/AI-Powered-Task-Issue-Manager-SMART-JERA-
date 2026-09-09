@@ -11,7 +11,6 @@ function Projects() {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
   const role=localStorage.getItem("role");
   // console.log("Role:", role);
   useEffect(() => {
@@ -19,11 +18,7 @@ function Projects() {
   }, []);
   const fetchProjects = async () => {
     try {
-      const { data } = await api.get("/projects", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data } = await api.get("/projects");
 
       setProjects(data);
     } catch (error) {
@@ -42,11 +37,6 @@ function Projects() {
         {
           title,
           description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       );
 
@@ -64,12 +54,7 @@ function Projects() {
 
   const deleteProject = async (id) => {
     try {
-      await api.delete(`/projects/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      await api.delete(`/projects/${id}`);
       fetchProjects();
 
       toast.success("Project Deleted Successfully");
@@ -87,11 +72,6 @@ function Projects() {
         `/projects/${projectId}/add-member`,
         {
           email: memberEmails[projectId],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       );
       toast.success("Member Added Successfully");
@@ -115,12 +95,7 @@ const generateTasks =async(
   try{
     await api.post(
       `/ai/generate/${projectId}`,
-      {},
-      {
-      headers:{
-        Authorization:`Bearer ${token}`,
-      },
-      }
+      {}
     );
     toast.success("Tasks Generate Successfully");
   }catch (error) {

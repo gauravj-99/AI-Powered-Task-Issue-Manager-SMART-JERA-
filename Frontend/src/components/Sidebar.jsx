@@ -16,7 +16,7 @@ function Sidebar() {
   localStorage.getItem("role");
 
   return (
-    <div className="w-64 bg-slate-900 text-white min-h-screen p-5">
+    <div className="w-64 bg-slate-500 text-white min-h-screen p-5">
 
       <h1 className="text-2xl font-bold mb-10">
         Jira AI

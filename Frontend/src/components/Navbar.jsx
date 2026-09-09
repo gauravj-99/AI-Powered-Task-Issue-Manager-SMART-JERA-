@@ -4,7 +4,7 @@ function Navbar({
   placeholder = "Search..."
 }) {
   return (
-    <div className="bg-white shadow rounded-xl p-4 flex justify-between items-center mb-6">
+    <div className="bg-white shadow rounded-xl p-4 flex justify-between items-center mb-6 bg-gradient-to-r from-blue-500 to-blue-200">
       <input
         type="text"
         placeholder={placeholder}

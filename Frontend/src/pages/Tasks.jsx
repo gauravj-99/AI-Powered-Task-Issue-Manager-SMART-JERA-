@@ -2,8 +2,8 @@ import TasksView from "../components/TasksView";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../services/api";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+// import Sidebar from "../components/Sidebar";
+// import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 function Tasks() {
   const { projectId } = useParams();
@@ -17,7 +17,6 @@ function Tasks() {
   
   const [search, setSearch] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const token = localStorage.getItem("token");
   const role= localStorage.getItem("role");
   const userId = localStorage.getItem("userId");
   useEffect(() => {
@@ -28,12 +27,7 @@ function Tasks() {
   const fetchTasks = async () => {
     try {
       const { data } = await api.get(
-        `/tasks/${projectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `/tasks/${projectId}`
       );
 
       setTasks(data);
@@ -45,12 +39,7 @@ function Tasks() {
   const fetchProject = async () => {
     try {
       const { data } = await api.get(
-        `/projects/${projectId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `/projects/${projectId}`
       );
       setProject(data);
       setMembers(data.members || []);
@@ -70,11 +59,6 @@ function Tasks() {
           dueDate,
           project: projectId,
           assignedTo,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       );
 
@@ -96,11 +80,8 @@ function Tasks() {
 
   const deleteTask = async (id) => {
     try {
-      await api.delete(`/tasks/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.delete(`/tasks/${id}`
+      );
 
       fetchTasks();
     } catch (error) {
@@ -112,12 +93,7 @@ const updateStatus = async (id, status) => {
   try {
     await api.put(
       `/tasks/${id}`,
-      { status },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      { status }
     );
 
     toast.success(`Task moved to ${status}`);

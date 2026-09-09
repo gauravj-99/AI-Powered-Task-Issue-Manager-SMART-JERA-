@@ -5,8 +5,7 @@ import { toast } from "react-toastify";
 function MyTasks() {
   const [tasks, setTasks] = useState([]);
 
-  const token = localStorage.getItem("token");
-  const [search, setSearch]=useState("");
+  const [search, setSearch] = useState("");
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -14,12 +13,7 @@ function MyTasks() {
   const fetchTasks = async () => {
     try {
       const { data } = await api.get(
-        "/tasks/my-tasks",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        "/tasks/my-tasks"
       );
 
       setTasks(data);
@@ -27,71 +21,65 @@ function MyTasks() {
       console.log(error);
     }
   };
-const updateStatus = async (
-  taskId,
-  status
-) => {
-  try {
-    await api.put(
-      `/tasks/${taskId}`,
-      { status },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  const updateStatus = async (
+    taskId,
+    status
+  ) => {
+    try {
+      await api.put(
+        `/tasks/${taskId}`,
+        { status }
+      );
 
-    toast.success("Task status updated");
+      toast.success("Task status updated");
 
-    fetchTasks();
+      fetchTasks();
 
-  } catch (error) {
+    } catch (error) {
 
-    toast.error(
-      error.response?.data?.message ||
-      "Failed to update task"
-    );
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to update task"
+      );
 
-    console.log(error);
-  }
-};
+      console.log(error);
+    }
+  };
 
-const totalTasks = tasks.length;
+  const totalTasks = tasks.length;
 
-const completedTasks = tasks.filter(
-  (task) => task.status === "Done"
-).length;
+  const completedTasks = tasks.filter(
+    (task) => task.status === "Done"
+  ).length;
 
-const inProgressTasks = tasks.filter(
-  (task) => task.status === "In Progress"
-).length;
+  const inProgressTasks = tasks.filter(
+    (task) => task.status === "In Progress"
+  ).length;
 
-const todoTasks = tasks.filter(
-  (task) => task.status === "Todo"
-).length;
+  const todoTasks = tasks.filter(
+    (task) => task.status === "Todo"
+  ).length;
 
-const filteredTasks = tasks.filter(
-  (task) =>
-    task.title?.toLowerCase()
-      .includes(search.toLowerCase()) ||
-    task.description?.toLowerCase()
-      .includes(search.toLowerCase())
-);
-return(
-  <MyTasksView
-    tasks={tasks}
-    search={search}
-    setSearch={setSearch}
-    totalTasks={totalTasks}
-    completedTasks={completedTasks}
-    inProgressTasks={inProgressTasks}
-    todoTasks={todoTasks}
-    filteredTasks={filteredTasks}
-    updateStatus={updateStatus}
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.title?.toLowerCase()
+        .includes(search.toLowerCase()) ||
+      task.description?.toLowerCase()
+        .includes(search.toLowerCase())
+  );
+  return (
+    <MyTasksView
+      tasks={tasks}
+      search={search}
+      setSearch={setSearch}
+      totalTasks={totalTasks}
+      completedTasks={completedTasks}
+      inProgressTasks={inProgressTasks}
+      todoTasks={todoTasks}
+      filteredTasks={filteredTasks}
+      updateStatus={updateStatus}
     />
-  
-)
+
+  )
 }
 export default MyTasks;
-  
