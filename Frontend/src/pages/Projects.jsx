@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { toast } from "react-toastify";
+import {SUCCESS_MESSAGES,ERROR_MESSAGES,} from "../constants/messages";
+import {showSuccess,showError} from "../utils/toastHelper";
 function Projects() {
   const [projects, setProjects] = useState([]);
   const [title, setTitle] = useState("");
@@ -43,12 +45,13 @@ function Projects() {
       setTitle("");
       setDescription("");
       fetchProjects();
-      toast.success("Project Created Successfully");
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-        "Failed to Create Project"
-      );
+      showSuccess(
+  SUCCESS_MESSAGES.PROJECT_CREATED
+);
+      } catch (error) {
+        showError(
+  ERROR_MESSAGES.PROJECT_CREATE
+);
     }
   };
 
