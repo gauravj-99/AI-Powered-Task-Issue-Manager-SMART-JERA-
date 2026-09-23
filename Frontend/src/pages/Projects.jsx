@@ -60,11 +60,13 @@ function Projects() {
       await api.delete(`/projects/${id}`);
       fetchProjects();
 
-      toast.success("Project Deleted Successfully");
+      showSuccess(
+        SUCCESS_MESSAGES.PROJECT_DELETED
+      );
     } catch (error) {
-      toast.error(
+      showError(
         error.response?.data?.message ||
-        "Failed to Delete Project"
+        ERROR_MESSAGES.PROJECT_DELETE_FAILED
       );
     }
   };
@@ -77,8 +79,9 @@ function Projects() {
           email: memberEmails[projectId],
         }
       );
-      toast.success("Member Added Successfully");
-
+      showSuccess(
+        SUCCESS_MESSAGES.MEMBER_ADDED
+      );
       fetchProjects();
 
       setMemberEmails({
@@ -86,9 +89,9 @@ function Projects() {
         
       });
     } catch (error) {
-      toast.error(
+      showError(
         error.response?.data?.message ||
-        "Failed to Add Member"
+        ERROR_MESSAGES.MEMBER_ADD_FAILED
       );
     }
   };
@@ -100,11 +103,13 @@ const generateTasks =async(
       `/ai/generate/${projectId}`,
       {}
     );
-    toast.success("Tasks Generate Successfully");
+showSuccess(
+  SUCCESS_MESSAGES.AI_TASKS_GENERATED
+);
   }catch (error) {
-    toast.error(
+    showError(
       error.response?.data?.message ||
-      "Failed to Generate Tasks"
+      ERROR_MESSAGES.AI_TASKS_GENERATION_FAILED
     );
   }
 };

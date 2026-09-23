@@ -8,6 +8,8 @@ export const SUCCESS_MESSAGES = {
   TASK_UPDATED: "Task Updated Successfully",
   TASK_DELETED: "Task Deleted Successfully",
   TASK_MOVED: "Task Status Updated Successfully",
+  AI_TASKS_GENERATED: "Tasks Generated Successfully",
+  AI_TASKS_GENERATION_FAILED: "Failed to Generate Tasks",
 };
 
 export const ERROR_MESSAGES = {
