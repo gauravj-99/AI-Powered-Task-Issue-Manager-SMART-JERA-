@@ -70,10 +70,13 @@ function Tasks() {
       setAssignedTo("");
       setDueDate("");
       fetchTasks();
+      showSuccess(
+        SUCCESS_MESSAGES.TASK_CREATED
+      );
     } catch (error) {
-      toast.error(
+      showError(
         error.response?.data?.message ||
-        "Failed to create task"
+        ERROR_MESSAGES.TASK_CREATE_FAILED
       );
 
       console.log(error);
@@ -86,7 +89,15 @@ function Tasks() {
       );
 
       fetchTasks();
+      showSuccess(
+        SUCCESS_MESSAGES.TASK_DELETED
+      );
     } catch (error) {
+      showError(
+        error.response?.data?.message ||
+        ERROR_MESSAGES.TASK_DELETE_FAILED
+      );
+
       console.log(error);
     }
   };
@@ -98,13 +109,15 @@ const updateStatus = async (id, status) => {
       { status }
     );
 
-    toast.success(`Task moved to ${status}`);
+    showSuccess(
+      SUCCESS_MESSAGES.TASK_MOVED
+    );
 
     fetchTasks();
   } catch (error) {
-    toast.error(
+    showError(
       error.response?.data?.message ||
-      "Failed to update task"
+      ERROR_MESSAGES.TASK_MOVE_FAILED
     );
 
     console.log(error);

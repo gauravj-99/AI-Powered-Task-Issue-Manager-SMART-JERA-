@@ -1,7 +1,9 @@
 import MyTasksView from "../components/MyTasksView";
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import {SUCCESS_MESSAGES,ERROR_MESSAGES,} from "../constants/messages";
+import {showSuccess,showError,} from "../utils/toastHelper";
 function MyTasks() {
   const [tasks, setTasks] = useState([]);
 
@@ -31,16 +33,18 @@ function MyTasks() {
         { status }
       );
 
-      toast.success("Task status updated");
+      showSuccess(
+        SUCCESS_MESSAGES.TASK_MOVED
+      );
 
       fetchTasks();
 
     } catch (error) {
 
-      toast.error(
-        error.response?.data?.message ||
-        "Failed to update task"
-      );
+     showError(
+      error.response?.data?.message ||
+      ERROR_MESSAGES.TASK_MOVE_FAILED
+    );
 
       console.log(error);
     }
