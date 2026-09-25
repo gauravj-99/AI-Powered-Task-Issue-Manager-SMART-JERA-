@@ -1,0 +1,579 @@
+API Documentation 
+
+API Overview 
+
+The application uses RESTful APIs developed using Express.js to facilitate communication between the React frontend and MongoDB database. All protected APIs require JWT authentication through the Authorization header. 
+
+Base URL 
+
+http://localhost:5000/api 
+
+Authentication Header 
+
+Authorization: Bearer <JWT_TOKEN> 
+
+ 
+
+4.1 Authentication APIs 
+
+Login User 
+
+Endpoint 
+
+POST /api/auth/login 
+
+Description 
+
+Authenticates a registered user and generates a JWT token. 
+
+Request Body 
+
+{ 
+
+"email": "manager@gmail.com", 
+
+"password": "123456" 
+
+} 
+
+Success Response 
+
+{ 
+
+"token": "eyJh...", 
+
+"user": { 
+
+"_id": "12345", 
+
+"name": "Gaurav Joshi", 
+
+"email": "manager@gmail.com", 
+
+"role": "Manager" 
+
+} 
+
+} 
+
+Error Response 
+
+{ 
+
+"message": "Invalid Credentials" 
+
+} 
+
+Status Codes 
+
+200 - Success 
+
+400 - Invalid Credentials 
+
+500 - Server Error 
+
+ 
+
+4.2 Dashboard APIs 
+
+Get Dashboard Statistics 
+
+Endpoint 
+
+GET /api/dashboard 
+
+Description 
+
+Returns project and task statistics for the dashboard. 
+
+Headers 
+
+Authorization: Bearer <JWT_TOKEN> 
+
+Success Response 
+
+{ 
+
+"totalProjects": 5, 
+
+"totalTasks": 42, 
+
+"todoTasks": 15, 
+
+"inProgressTasks": 10, 
+
+"doneTasks": 17 
+
+} 
+
+Status Codes 
+
+200 - Success 
+
+401 - Unauthorized 
+
+500 - Server Error 
+
+ 
+
+4.3 Project APIs 
+
+Get All Projects 
+
+Endpoint 
+
+GET /api/projects 
+
+Description 
+
+Fetches all projects accessible to the logged-in user. 
+
+Headers 
+
+Authorization: Bearer <JWT_TOKEN> 
+
+Success Response 
+
+[ 
+
+      { 
+
+"_id": "101", 
+
+"title": "JIRA Project", 
+
+"description": "Task Management System", 
+
+"members": [] 
+
+       } 
+
+] 
+
+ 
+
+Get Project By ID 
+
+Endpoint 
+
+GET /api/projects/:id 
+
+Example 
+
+GET /api/projects/101 
+
+Description 
+
+Returns details of a particular project. 
+
+Success Response 
+
+     { 
+
+"_id": "101", 
+
+"title": "JIRA Project", 
+
+"description": "Task Management System", 
+
+"members": [] 
+
+     } 
+
+ 
+
+Create Project 
+
+Endpoint 
+
+POST /api/projects 
+
+Access 
+
+Manager Only 
+
+Request Body 
+
+{ 
+
+"title": "JIRA System", 
+
+"description": "Project Management Application" 
+
+} 
+
+Success Response 
+
+{ 
+
+"message": "Project Created Successfully" 
+
+} 
+
+Validation 
+
+Title Required 
+
+Description Required 
+
+ 
+
+Delete Project 
+
+Endpoint 
+
+DELETE /api/projects/:id 
+
+  
+
+Access 
+
+Manager Only 
+
+Example 
+
+DELETE /api/projects/101 
+
+Success Response 
+
+{ 
+
+"message": "Project Deleted Successfully" 
+
+} 
+
+ 
+
+Add Member To Project 
+
+Endpoint 
+
+POST /api/projects/:projectId/add-member 
+
+Access 
+
+Manager Only 
+
+Request Body 
+
+{ 
+
+"email": "employee@gmail.com" 
+
+} 
+
+Success Response 
+
+{ 
+
+"message": "Member Added Successfully" 
+
+} 
+
+Error Response 
+
+{ 
+
+"message": "User Not Found" 
+
+} 
+
+ 
+
+4.4 Task APIs 
+
+Get Tasks By Project 
+
+Endpoint 
+
+GET /api/tasks/:projectId 
+
+Example 
+
+GET /api/tasks/101 
+
+Description 
+
+Returns all tasks belonging to the selected project. 
+
+Success Response 
+
+[ 
+
+      { 
+
+"_id": "501", 
+
+"title": "Create Login Page", 
+
+"status": "Todo", 
+
+"priority": "High" 
+
+      } 
+
+] 
+
+ 
+
+Create Task 
+
+Endpoint 
+
+POST /api/tasks 
+
+Access 
+
+ 
+
+Manager Only 
+
+Request Body 
+
+{ 
+
+"title": "Create Login Page", 
+
+"description": "Design login form", 
+
+"priority": "High", 
+
+"dueDate": "2026-09-30", 
+
+"project": "101", 
+
+"assignedTo": "301" 
+
+} 
+
+\Success Response 
+
+{ 
+
+"message": "Task Created Successfully" 
+
+} 
+
+Validation 
+
+Title Required 
+
+Description Required 
+
+Assigned User Required 
+
+ 
+
+Update Task 
+
+Endpoint 
+
+PUT /api/tasks/:id 
+
+Example 
+
+PUT /api/tasks/501 
+
+Request Body 
+
+{ 
+
+"status": "In Progress" 
+
+} 
+
+Allowed Status Values 
+
+Todo 
+
+In Progress 
+
+Done 
+
+Success Response 
+
+{ 
+
+"message": "Task Updated Successfully" 
+
+} 
+
+ 
+
+Delete Task 
+
+Endpoint 
+
+DELETE /api/tasks/:id 
+
+Access 
+
+Manager Only 
+
+Example 
+
+DELETE /api/tasks/501 
+
+Success Response 
+
+{ 
+
+"message": "Task Deleted Successfully" 
+
+} 
+
+ 
+
+4.5 Authentication and Authorization 
+
+JWT Authentication Flow 
+
+User Login 
+
+↓ 
+
+Credentials Verification 
+
+↓ 
+
+JWT Token Generated 
+
+↓ 
+
+Token Stored in localStorage 
+
+↓ 
+
+Axios Request Interceptor 
+
+↓ 
+
+Authorization Header Added 
+
+↓ 
+
+Request Sent to Backend 
+
+↓ 
+
+Token Verification 
+
+↓ 
+
+Access Granted 
+
+ 
+
+User Roles 
+
+Manager 
+
+Create Project 
+
+Delete Project 
+
+Add Members 
+
+Create Tasks 
+
+Delete Tasks 
+
+Assign Tasks 
+
+Update Tasks 
+
+View Dashboard Statistics 
+
+Employee 
+
+View Assigned Projects 
+
+View Assigned Tasks 
+
+Update Own Task Status 
+
+ 
+
+4.6 Common API Error Responses 
+
+Unauthorized Access 
+
+Response 
+
+{ 
+
+"message": "Not Authorized" 
+
+} 
+
+Status Code 
+
+401 Unauthorized 
+
+ 
+
+Validation Error 
+
+Response 
+
+{ 
+
+"message": "Title and Description are required" 
+
+} 
+
+Status Code 
+
+400 Bad Request 
+
+ 
+
+Resource Not Found 
+
+Response 
+
+{ 
+
+"message": "Project Not Found" 
+
+} 
+
+Status Code 
+
+404 Not Found 
+
+ 
+
+Internal Server Error 
+
+Response 
+
+{ 
+
+"message": "Internal Server Error" 
+
+} 
+
+Status Code 
+
+500 Internal Server Error 
+
+ 
+
+API Security Features 
+
+JWT Authentication 
+
+Role-Based Access Control (RBAC) 
+
+Protected Routes 
+
+Axios Request Interceptors 
+
+Centralized Error Handling 
+
+Input Validation 
+
+Authorization Middleware 
+
+ 
