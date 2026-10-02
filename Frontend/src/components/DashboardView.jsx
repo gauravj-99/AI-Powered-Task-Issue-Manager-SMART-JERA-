@@ -30,6 +30,7 @@ return (
           <p className="mt-2 text-gray-300">
             Welcome to Jira AI Project Management
           </p>
+          
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
